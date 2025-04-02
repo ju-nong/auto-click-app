@@ -11,7 +11,12 @@ declare global {
                 x: number,
                 y: number,
             ) => Promise<MouseClass>;
-            actionClick: (x: number, y: number, count: number) => void;
+            actionClick: (
+                x: number,
+                y: number,
+                count: number,
+                delay: number,
+            ) => void;
         };
     }
 }

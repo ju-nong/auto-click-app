@@ -31,14 +31,17 @@
         <br />
         <br />
 
-        <h2>마우스 클릭</h2>
+        <h2>마우스 클릭 <span>ESC 누르면 Click 상태가 해제됨</span></h2>
         <label>x: <input v-model="mouseClick.$input.x" type="text" /></label>
         <label>y: <input v-model="mouseClick.$input.y" type="text" /> </label>
         <br />
         <label
             >count: <input v-model="mouseClick.$input.count" type="text" />
         </label>
-        <button @click="mouseClick.setPosition">set position</button>
+        <label
+            >delay: <input v-model="mouseClick.$input.delay" type="text" />
+        </label>
+        <button @click="mouseClick.setPosition">set</button>
         <br />
         settings | x: {{ mouseClick.settings.x }}, y:
         {{ mouseClick.settings.y }}, count: {{ mouseClick.settings.count }}
@@ -135,8 +138,8 @@ const smoothMoveMousePosition = reactive<{
 
 // 마우스 클릭
 const mouseClick = reactive<{
-    $input: Record<keyof Position, string> & { count: string };
-    settings: Position & { count: number };
+    $input: Record<keyof Position, string> & { count: string; delay: string };
+    settings: Position & { count: number; delay: number };
     setPosition: () => void;
     action: () => void;
 }>({
@@ -144,21 +147,29 @@ const mouseClick = reactive<{
         x: "",
         y: "",
         count: "",
+        delay: "100",
     },
     settings: {
         x: 0,
         y: 0,
         count: 0,
+        delay: 100,
     },
     setPosition: function () {
-        const { x, y, count } = this.$input;
+        const { x, y, count, delay } = this.$input;
 
         const parsingX = parseInt(x);
         const parsingY = parseInt(y);
         const parsingCount = parseInt(count);
+        const parsingDelay = parseInt(delay);
 
-        if (isNaN(parsingX) || isNaN(parsingY) || isNaN(parsingCount)) {
-            alert("좌표나 개수를 다시 입력해주세요");
+        if (
+            isNaN(parsingX) ||
+            isNaN(parsingY) ||
+            isNaN(parsingCount) ||
+            isNaN(parsingDelay)
+        ) {
+            alert("입력값을 확인해주세요");
             return;
         }
 
@@ -166,12 +177,13 @@ const mouseClick = reactive<{
             x: parsingX,
             y: parsingY,
             count: parsingCount,
+            delay: parsingDelay,
         };
     },
     action: function () {
-        const { x, y, count } = this.settings;
+        const { x, y, count, delay } = this.settings;
 
-        window.api.actionClick(x, y, count);
+        window.api.actionClick(x, y, count, delay);
     },
 });
 
@@ -194,5 +206,11 @@ label > input {
 
 main > button {
     padding: 8px 16px;
+}
+
+h2 > span {
+    color: #ccc;
+    font-size: 14px;
+    font-weight: normal;
 }
 </style>

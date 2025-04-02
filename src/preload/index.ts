@@ -18,7 +18,7 @@ const api = {
 
         return await mouse.move(straightTo(point));
     },
-    actionClick: async (x: number, y: number, count: number) => {
+    actionClick: async (x: number, y: number, count: number, delay: number) => {
         const point = new Point(x, y);
 
         await mouse.setPosition(point);
@@ -32,6 +32,8 @@ const api = {
         }
 
         window.addEventListener("keydown", watchPressESC);
+
+        mouse.config.autoDelayMs = delay;
 
         for (let i = 1; i <= count; i++) {
             if (pressESC) {
