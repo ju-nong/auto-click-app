@@ -1,7 +1,9 @@
-import { contextBridge } from "electron";
+import { contextBridge, ipcRenderer } from "electron";
 import { electronAPI } from "@electron-toolkit/preload";
 
 import { mouse, Point, straightTo } from "@nut-tree-fork/nut-js";
+
+let pressESC = false;
 
 // Custom APIs for renderer
 const api = {
@@ -20,18 +22,9 @@ const api = {
     },
     actionClick: async (x: number, y: number, count: number, delay: number) => {
         const point = new Point(x, y);
+        pressESC = false;
 
         await mouse.setPosition(point);
-
-        let pressESC = false;
-
-        function watchPressESC(event: KeyboardEvent) {
-            if (event.key === "Escape") {
-                pressESC = true;
-            }
-        }
-
-        window.addEventListener("keydown", watchPressESC);
 
         mouse.config.autoDelayMs = delay;
 
@@ -43,9 +36,14 @@ const api = {
             await mouse.leftClick();
         }
 
-        window.removeEventListener("keydown", watchPressESC);
-
         return;
+    },
+    onEscKeyPressed: (callback: Function) => {
+        ipcRenderer.on("esc-key-pressed", () => {
+            pressESC = true;
+
+            callback();
+        });
     },
 };
 

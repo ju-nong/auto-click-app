@@ -17,6 +17,7 @@ declare global {
                 count: number,
                 delay: number,
             ) => void;
+            onEscKeyPressed: (callback: Function) => void;
         };
     }
 }

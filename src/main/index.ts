@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from "electron";
+import { app, shell, BrowserWindow, ipcMain, globalShortcut } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
@@ -32,6 +32,20 @@ function createWindow(): void {
         mainWindow.loadURL(process.env["ELECTRON_RENDERER_URL"]);
     } else {
         mainWindow.loadFile(join(__dirname, "../renderer/index.html"));
+    }
+
+    // ESC 키 감지를 위한 글로벌 단축키 등록
+    const ret = globalShortcut.register("Escape", () => {
+        // Vue 앱으로 이벤트 전달
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.webContents.send("esc-key-pressed");
+        }
+    });
+
+    if (!ret) {
+        console.log("ESC event listener registration failed");
+    } else {
+        console.log("ESC event listener registration completed");
     }
 }
 

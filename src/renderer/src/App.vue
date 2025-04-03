@@ -187,10 +187,17 @@ const mouseClick = reactive<{
     },
 });
 
+// ESC
+function handleEscKeyPressed() {
+    console.log("pressed ESC");
+}
+
 function init() {
     printMousePosition.$interval = setInterval(() => {
         printMousePosition.action();
     }, 2000);
+
+    window.api.onEscKeyPressed(handleEscKeyPressed);
 }
 
 onBeforeMount(() => {
